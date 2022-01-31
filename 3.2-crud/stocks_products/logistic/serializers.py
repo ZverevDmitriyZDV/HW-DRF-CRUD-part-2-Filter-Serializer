@@ -31,7 +31,6 @@ class StockSerializer(serializers.ModelSerializer):
 
         for product_position in positions:
             product_position['stock_id'] = stock_id
-            print(product_position)
             StockProduct(**product_position).save()
 
         return stock
@@ -42,7 +41,12 @@ class StockSerializer(serializers.ModelSerializer):
         stock = super().update(instance, validated_data)
 
         for product_position in positions:
-
+            # tr=StockProduct.objects.get(stock_id=instance.id, product=product_position['product'])
+            is_stock_exist = StockProduct.objects.filter(stock_id=instance.id, product=product_position['product'])
+            if len(is_stock_exist) == 0:
+                product_position['stock_id'] = instance.id
+                StockProduct(**product_position).save()
+                return stock
             stock_product_needed = StockProduct.objects.get(stock_id=instance.id, product=product_position['product'])
             stock_product_needed.price = product_position.get('price', stock_product_needed.price)
             stock_product_needed.quantity = product_position.get('quantity', stock_product_needed.quantity)
