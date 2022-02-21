@@ -67,18 +67,22 @@ def insert_data_to_db(course_factory, student_factory, c_num=10, st_num=10):
 @pytest.mark.django_db
 def test_get_first_course(client, student_factory, course_factory):
     courses, students_set = insert_data_to_db(course_factory, student_factory, c_num=1, st_num=10)
-    url = reverse("courses-list")
+
+    assert len(courses) == 1
+
+    course = courses[0]
+    students = [student.id for student in course.students.all()]
+    course_input_data = {'id': course.id, 'name': course.name, 'students': students}
+    url = f'{reverse("courses-list")}{course.id}/'
     resp = client.get(url)
 
     assert resp.status_code == HTTP_200_OK
 
     resp_json = resp.json()
 
-    assert len(resp_json) == 1
+    assert type(resp_json) is dict
 
-    assert len(courses) == 1
-
-    assert resp_json[0]['id'] == courses[0].id
+    assert resp_json == course_input_data
 
 
 @pytest.mark.django_db
@@ -125,11 +129,24 @@ def test_filter_id(client, student_factory, course_factory):
 def test_create_new(client):
     students_set = baker.make(Student, _quantity=10)
     students_random_list = random_list_for_students(students_set, qty=10)
-    data = {'name': 'test_course', 'students_id': students_random_list}
+    name_data = 'test_course'
+    data = {'name': name_data, 'students': students_random_list}
     url = reverse("courses-list")
     request = client.post(url, data)
 
     assert request.status_code == 201
+
+    url_check = f'{reverse("courses-list")}?name={name_data}'
+    request_check = client.get(url_check)
+
+    assert request_check.status_code == 200
+
+    assert len(request_check.json()) == 1
+
+    assert request.json() == request_check.json()[0]
+
+
+
 
 
 @pytest.mark.django_db
@@ -138,20 +155,25 @@ def test_put(client, student_factory, course_factory):
     students_random_list = random_list_for_students(students_set, qty=10)
     random_id = get_random_course_id(courses)
     url = f'{reverse("courses-list")}{random_id}/'
-    data = {'name': 'random name', 'students': students_random_list}
+    name_data = 'random_data'
+    data = {'name': name_data, 'students': students_random_list}
 
     data_before = client.get(url)
     assert data_before.status_code == 200
 
+
     request = client.put(url, data)
     assert request.status_code == 200
 
-    data_after = client.get(url)
+    url_after = f'{reverse("courses-list")}?name={name_data}'
+    data_after = client.get(url_after)
     assert data_after.status_code == 200
 
-    assert data_after.json() == request.json()
+    assert len(data_after.json()) == 1
 
-    assert data_after.json() != data_before.json()
+    assert data_after.json()[0] == request.json()
+
+    assert data_after.json()[0] != data_before.json()
 
 
 @pytest.mark.django_db
