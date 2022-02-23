@@ -1,0 +1,115 @@
+# примеры API-запросов
+
+
+
+# получение объявлений
+GET http://127.0.0.1:8000/adv/
+Content-Type: application/json
+
+
+###
+
+# создание объявления
+POST http://127.0.0.1:8000/adv/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "title": "Шкаф1 IKEA1",
+  "description": "Срочно1"
+}
+
+###
+
+# создание объявления
+POST http://127.0.0.1:8000/adv/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "title": "Шкаф2 IKEA2",
+  "description": "Срочно2"
+}
+
+###
+
+# создание объявления
+POST http://127.0.0.1:8000/adv/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "title": "Шкаф3 IKEA3",
+  "description": "Срочно3",
+  "status" : "CLOSED"
+}
+
+###
+
+# создание объявления
+POST http://127.0.0.1:8000/adv/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "title": "Шкаф4 IKEA4",
+  "description": "Срочно4"
+}
+
+###
+
+POST http://127.0.0.1:8000/adv/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "title": "Шкаф5 IKEA5",
+  "description": "Срочно4"
+}
+
+###
+
+# попытка поменять объявление
+PATCH http://127.0.0.1:8000/adv/23/
+Content-Type: application/json
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
+
+{
+  "status": "OPEN"
+}
+
+
+###
+
+PATCH http://127.0.0.1:8000/adv/17/
+Content-Type: application/json
+Authorization: Token 5ec9dae747b73f29659d6b7780743fb99bdf0307
+
+{
+  "status": "CLOSED"
+}
+
+
+###
+
+# фильтрация по создателю
+GET http://127.0.0.1:8000/adv/?creator=3
+Content-Type: application/json
+
+###
+
+# фильтрация по дате
+GET http://127.0.0.1:8000/adv/?created_at_after=2020-10-01
+Content-Type: application/json
+
+###
+
+
+DELETE  http://127.0.0.1:8000/adv/22/
+Authorization: Token 5ec9dae747b73f29659d6b7780743fb99bdf0307
+
+###
+
+
+DELETE  http://127.0.0.1:8000/adv/22/
+Authorization: Token 942d1b0cd048e3cd31286477d1f7d7fb8d8ce3be
